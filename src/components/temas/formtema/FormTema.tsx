@@ -4,10 +4,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../../contexts/AuthContext";
 import type Tema from "../../../models/Tema";
 import { RotatingLines } from "react-loader-spinner";
+import { ToastAlerta } from "../../../utils/ToastAlerta";
 
 function FormTema() {
 
-const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const [tema, setTema] = useState<Tema>({} as Tema)
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -31,7 +32,7 @@ const navigate = useNavigate();
 
     useEffect(() => {
         if (token === '') {
-            alert('Você precisa estar logado!')
+            ToastAlerta("Você precisa estar logado!", "info")
             navigate('/')
         }
     }, [token])
@@ -62,12 +63,12 @@ const navigate = useNavigate();
                 await atualizar(`/temas`, tema, setTema, {
                     headers: { 'Authorization': token }
                 })
-                alert('O Tema foi atualizado com sucesso!')
+                ToastAlerta("O Tema foi atualizado com sucesso!", "sucesso")
             } catch (error: any) {
                 if (error.toString().includes('403')) {
                     handleLogout();
                 } else {
-                    alert('Erro ao atualizar o tema.')
+                    ToastAlerta("Erro ao atualizar o tema.", "erro")
                 }
 
             }
@@ -76,12 +77,12 @@ const navigate = useNavigate();
                 await cadastrar(`/temas`, tema, setTema, {
                     headers: { 'Authorization': token }
                 })
-                alert('O Tema foi cadastrado com sucesso!')
+                ToastAlerta("O Tema foi cadastrado com sucesso!", "sucesso")
             } catch (error: any) {
                 if (error.toString().includes('403')) {
                     handleLogout();
                 } else {
-                    alert('Erro ao cadastrar o tema.')
+                    ToastAlerta("Erro ao cadastrar o tema.", "erro")
                 }
 
             }
@@ -97,7 +98,7 @@ const navigate = useNavigate();
                 {id === undefined ? 'Cadastrar Tema' : 'Editar Tema'}
             </h1>
 
-            <form className="w-1/2 flex flex-col gap-4"  onSubmit={gerarNovoTema}>
+            <form className="w-1/2 flex flex-col gap-4" onSubmit={gerarNovoTema}>
                 <div className="flex flex-col gap-2">
                     <label htmlFor="descricao">Descrição do Tema</label>
                     <input
@@ -105,7 +106,7 @@ const navigate = useNavigate();
                         placeholder="Descreva aqui seu tema"
                         name='descricao'
                         className="border-2 border-slate-700 rounded p-2"
-                    value={tema.descricao}
+                        value={tema.descricao}
                         onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
                     />
                 </div>
@@ -113,7 +114,7 @@ const navigate = useNavigate();
                     className="rounded text-slate-100 bg-purple-400
                                hover:bg-purple-600 w-1/2 py-2 mx-auto flex justify-center"
                     type="submit">
-                        {isLoading?
+                    {isLoading ?
                         <RotatingLines
                             strokeColor="white"
                             strokeWidth="5"
